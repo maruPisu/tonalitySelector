@@ -34,6 +34,7 @@ def sharpFlat(direction):
 	for i,k in zip(data2[start::verse], data2[stop::verse]):
 		replaceSingles(i,k)
 	print(song)
+	
 def replaceSingles(_from, to):
 	global song
 	song = song.replace(" "  + _from + " " , " "  + to + " ")
@@ -50,8 +51,6 @@ def replaceSingles(_from, to):
 	song = song.replace("\n" + _from + "7" , "\n" + to + "7")
 	song = song.replace(" "  + _from + "7" , " " + to + "7")
 
-	
-	
 def replaceNotes(idx, offset, arr):
 	global song
 	repl_idx = idx + offset
