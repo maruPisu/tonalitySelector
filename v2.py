@@ -3,15 +3,27 @@ import msvcrt
 import time
 from colorama import Fore, Back, Style
 from colorama import init
-numStatus = 2
+numStatus = 4
 status = 0
+
+def initStatus():
+	global status
+	if status  == 0:
+		print("Welcome, press enter to start or esc to exit")
+	
+	elif status  == 1:
+		print("status {}".format(status))
+	elif status  == 2:
+		print("status {}".format(status))
+	elif status  == 3:
+		print("Process finished, press enter to close the application")
 
 def manageEnter():
 	global status
 	print("enter")
 	if(status + 1 < numStatus): #exit just if status = numStatus - 1 
 		status += 1
-		print("status {}".format(status))
+		initStatus()
 		return False
 	else:
 		return True
@@ -21,7 +33,7 @@ def manageEsc():
 	print("esc")
 	if(status > 0):	#exit just if status = 0
 		status -= 1
-		print("status {}".format(status))
+		initStatus()
 		return False
 	else:
 		return True
@@ -51,6 +63,10 @@ def manageRightArrow():
 	print("right")
 	return False
 
+subprocess.call("cls",shell=True)
+print("\tTRANSPOSE MUSIC!!\n\n")
+initStatus()
+	
 done = False
 while not done:
 	key = ord(msvcrt.getch())
