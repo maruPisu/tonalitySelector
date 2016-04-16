@@ -3,11 +3,16 @@ import msvcrt
 import time
 from colorama import Fore, Back, Style
 from colorama import init
+import sys
+
+init(autoreset=True) #colorama init
 
 numStatus = 4
 status = 0
 pos = 0
-nLines = 30
+nLines = 40
+marker = "[MaRkEr]"
+maxlen = 55
 
 f = open("input.txt","r")
 song = f.read().lower()
@@ -20,6 +25,8 @@ def initStatus():
 	print("\tTRANSPOSE MUSIC!!\n\n")
 	if status  == 0:
 		print("Welcome, press enter to start or esc to exit")	
+	elif status == 1:
+		selectorPrint()
 	elif status  == numStatus-1:
 		print("Process finished, press enter to close the application")
 	else:
@@ -36,12 +43,34 @@ def selectorPrint():
 			max = songLen 
 		else:
 			max = mid + pos
-		
+	for i in range(0, maxlen + 4):
+		sys.stdout.write('=')
+	print("")
 	for idx in range(max - nLines , max):
+		sys.stdout.write('| ')
+		toPrint = splittedSong[idx]
+		
+		if not toPrint.startswith(marker) and len(toPrint) > maxlen:
+			toPrint = toPrint[:maxlen - 3] + "..."
+		if toPrint.startswith(marker) and len(toPrint) - len(marker) > maxlen:
+			toPrint = toPrint[:maxlen - 3 + len(marker)] + "..."
+			
+		thisLen = len(toPrint)
+		if toPrint.startswith(marker):
+			toPrint = Fore.YELLOW + toPrint[len(marker):]
+			thisLen = thisLen - len(marker)
 		if (idx == pos):
-			print(splittedSong[idx])
-		else:
-			print(splittedSong[idx])
+			if splittedSong[idx] == "" or splittedSong[idx] == marker:
+				toPrint =(Back.GREEN + ">")
+				thisLen = 1
+			else:
+				toPrint = Back.GREEN + toPrint
+		sys.stdout.write(toPrint)
+		for i in range(thisLen, maxlen + 1):
+			sys.stdout.write(' ')
+		sys.stdout.write("|\n")
+	for i in range(0, maxlen + 4):
+		sys.stdout.write('=')
 	
 def selectorVertical(dir):
 	global pos
@@ -52,12 +81,18 @@ def selectorVertical(dir):
 		if pos != songLen - 1:
 			pos = pos + 1 
 	selectorPrint()
-	print(dir)
 	
 def selectorHorizontal(dir):
 	selectorPrint()
 	print(dir)
-		
+
+def selectorSpacebar():
+	if splittedSong[pos].startswith(marker):
+		splittedSong[pos] = splittedSong[pos][len(marker):]
+	else:
+		splittedSong[pos] = marker + splittedSong[pos]
+	selectorPrint()	
+	
 def manageEnter():
 	global status
 	print("enter")
@@ -82,7 +117,8 @@ def manageSpacebar():
 	global status
 	if status == 0 or status == numStatus-1:
 		return False
-	print("space")
+	if status == 1:
+		selectorSpacebar()
 	return False
 	
 def manageDownArrow():
